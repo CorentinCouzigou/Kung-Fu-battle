@@ -68,15 +68,17 @@ h1{
 }
 
 .cellCurrent {
-   background-image:url("../images/fire.gif");
    background-position: center;
    background-position-x: 0%;
    background-position-y:67.5%;
    background-size: 8.5rem;
 
 }
-.fire {
-
+.player1{
+    background-image:url("../images/fire.gif");
+}
+.player2 {
+    background-image:url("../images/water.gif");
 }
 
 .cellCurrent-top {

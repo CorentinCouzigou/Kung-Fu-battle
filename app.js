@@ -29,8 +29,8 @@ var app = {
         app.board.y = 10;
         app.target.x = app.randomFunctionX(0, app.board.x - 1);
         app.target.y = app.randomFunctionY(0, app.board.y - 1);
-        app.player2.x = 13;
-        app.player2.y = 16;
+        app.player2.x = app.board.x-1;
+        app.player2.y = app.board.y-1;
         app.drawBoard();
         app.allListener();
     },
@@ -55,13 +55,13 @@ var app = {
                 const cell = document.createElement('div');
                 cell.classList.add('cell');
                 if (x == app.player1.x && y == app.player1.y) {
-                    cell.classList.add('cellCurrent');
+                    cell.classList.add('cellCurrent', 'player1');
                 }
                 if (x == app.target.x && y == app.target.y) {
                     cell.classList.add('cellEnd');
                 }
-                if (x == app.player2.x && y == app.target.y) {
-                    cell.classList.add('cellCurrent');
+                if (x == app.player2.x && y == app.player2.y) {
+                    cell.classList.add('cellCurrent', 'player2');
                 }
                 row.append(cell);
             }
@@ -85,7 +85,7 @@ var app = {
             app.turn(data);
         }
         else if (data === 'KeyD' || data === 'KeyA' || data === 'KeyW' || data === 'KeyS') {
-
+            app.turn(data);
         } else {
             switch (app.player1.direction) {
                 case 'right':
@@ -148,6 +148,66 @@ var app = {
                     app.removeBoard();
                     app.turn('ArrowDown');
                     break;
+            };
+            switch (app.player2.direction) {
+                case 'right':
+                    app.player1.x++;
+                    if (app.player2.x > app.board.x - 1) {
+                        app.player2.x = ((app.board.x) - 1);
+                        app.removeBoard();
+                    }
+                    if ( app.player2.x === app.target.x &&  app.player2.y === app.target.y) {
+                        app.player2.attaque = app.player2.attaque + 6;//+=6
+                        console.log(app.player1.attaque)
+                        app.removeBoard();
+                        // app.drawBoard.cell.classList.remove('cellEnd');
+                    }
+                    app.removeBoard();
+                    app.turn('KeyD');
+                    break;
+                case 'left':
+                    app.player2.x--;
+                    if (app.player2.x < 0) {
+                        app.player2.x = 0;
+                        app.removeBoard();
+                    }
+                    if ( app.player2.x === app.target.x &&  app.player2.y === app.target.y) {
+                        app.player2.attaque = app.player2.attaque + 6;//+=6
+                        app.removeBoard();
+                        // app.drawBoard.cell.classList.remove('cellEnd');
+                    }
+                    app.removeBoard();
+                    app.turn('KeyA');
+                    break;
+                case 'top':
+                    app.player1.y--;
+                    if (app.player1.y < 0) {
+                        app.player1.y = 0;
+                        app.removeBoard();
+                    }
+                    if (app.player2.x === app.target.x && app.player2.y === app.target.y) {
+                        app.player2.attaque = app.player2.attaque + 6;//+=6
+                        app.removeBoard();
+                        // app.drawBoard.cell.classList.remove('cellEnd');
+                    }
+                    app.cleanbord();
+                    app.drawBoard();
+                    app.turn('KeyW');
+                    break;
+                case 'bottom':
+                    app.player2.y++;
+                    if (app.player2.y > app.board.y - 1) {
+                        app.player2.y = app.board.y - 1;
+                        app.removeBoard();
+                    }
+                    if (app.player2.x === app.target.x &&  app.player2.y === app.target.y) {
+                        app.player2.attaque = app.player2.attaque + 6;//+=6
+                        app.removeBoard();
+                        // app.drawBoard.cell.classList.remove('cellEnd');
+                    }
+                    app.removeBoard();
+                    app.turn('KeyS');
+                    break;
             }
 
         }
@@ -156,42 +216,81 @@ var app = {
     turn(event) {
         switch (event) {
             case 'ArrowRight':
-                app.turnRight();
+                app.turnRight('player1');
                 break;
             case 'ArrowLeft':
-                app.turnLeft();
+                app.turnLeft('player1');
                 break;
             case 'ArrowUp':
-                app.turnUp();
+                app.turnUp('player1');
                 break;
             case 'ArrowDown':
-                app.turnDown();
+                app.turnDown('player1');
+                break;
+            case 'KeyD':
+                app.turnRight('player2');
+                break;
+            case 'KeyA':
+                app.turnLeft('player2');
+                break;
+            case 'KeyW':
+                app.turnUp('player2');
+                break;
+            case 'KeyS':
+                app.turnDown('player2');
                 break;
         }
     },
-    turnRight() {
+    turnRight(string) {
         app.removeBoard();
-        const player1 = document.querySelector('.cellCurrent');
-        player1.classList.add('cellCurrent-right');
-        app.player1.direction = 'right';
+        if (string === 'player1') {
+            const player1 = document.querySelector('.cellCurrent.player1');
+            player1.classList.add('cellCurrent-right');
+            app.player1.direction = 'right';
+        }
+        if (string === 'player2') {
+            const player2 = document.querySelector('.cellCurrent.player2');
+            player2.classList.add('cellCurrent-right');
+            app.player2.direction = 'right';
+        }
+
     },
-    turnLeft() {
+    turnLeft(string) {
         app.removeBoard();
-        const player1 = document.querySelector('.cellCurrent');
-        player1.classList.add('cellCurrent-left');
-        app.player1.direction = 'left';
+        if (string === 'player1') {
+            const player1 = document.querySelector('.cellCurrent.player1');
+            player1.classList.add('cellCurrent-left');
+            app.player1.direction = 'left';
+        }
+        if (string === 'player2') {
+            const player2 = document.querySelector('.cellCurrent.player2');
+            player2.classList.add('cellCurrent-left');
+            app.player2.direction = 'left';
+        }
     },
-    turnUp() {
-        app.removeBoard();
-        const player1 = document.querySelector('.cellCurrent');
-        player1.classList.add('cellCurrent-top');
-        app.player1.direction = 'top';
+    turnUp(string) {
+        if (string === 'player1') {
+            const player1 = document.querySelector('.cellCurrent.player1');
+            player1.classList.add('cellCurrent-top');
+            app.player1.direction = 'top';
+        }
+        if (string === 'player2') {
+            const player2 = document.querySelector('.cellCurrent.player2');
+            player2.classList.add('cellCurrent-top');
+            app.player2.direction = 'top';
+        }
     },
-    turnDown() {
-        app.removeBoard();
-        const player1 = document.querySelector('.cellCurrent');
-        player1.classList.add('cellCurrent-bottom');
-        app.player1.direction = 'bottom';
+    turnDown(string) {
+        if (string === 'player1') {
+            const player1 = document.querySelector('.cellCurrent.player1');
+            player1.classList.add('cellCurrent-bottom');
+            app.player1.direction = 'bottom';
+        }
+        if (string === 'player2') {
+            const player2 = document.querySelector('.cellCurrent.player2');
+            player2.classList.add('cellCurrent-bottom');
+            app.player2.direction = 'bottom';
+        }
     },
     cleanbord() {
         const board = document.querySelector('#board');
