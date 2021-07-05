@@ -85,6 +85,13 @@ var app = {
     //ajout de tous les écouteurs d'evenements
     allListener() {
         document.addEventListener('keyup', app.moveForward);
+        const buttonSelection = document.querySelector('.buttonSelection');
+        buttonSelection.addEventListener('click',app.closeModal)
+    },
+    closeModal (){
+        const modal = document.querySelector('#modalContainer');
+        modal.classList.add('displayNone');
+        app.init();
     },
     moveForward(event) {
         const data = event.code;

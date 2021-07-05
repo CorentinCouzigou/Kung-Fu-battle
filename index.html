@@ -11,8 +11,25 @@
 </head>
 
 <body>
-    <header class="header">yo</header>
+    <header class="header"></header>
     <h1>Elements Battle</h1>
+
+    <div id="modalContainer" class="modal" aria-hidden="true" role="alert" aria-modal="false">
+        <div id="modalWrapper">
+            <button class="ChoseFire buttonSelection"><img class="imgPerso" src="./partials/images/Fire.jpg"
+                alt="Elephant at sunset">
+           <span>Fire</span></button>
+            <button class="ChoseWater buttonSelection"><img class="imgPerso"  src="./partials/images/Water.jpg"
+                alt="Elephant at sunset">
+           <span>Water</span></button>
+            <button class="ChoseEarth buttonSelection"><img class="imgPerso"  src="./partials/images/Earth.jpg"
+                alt="Elephant at sunset">
+          <span>Earth</span></button>
+            <button class="ChoseWin buttonSelection"><img class="imgPerso"  src="./partials/images/Win.jpg"
+                alt="Elephant at sunset">
+           <span>Win</span></button>
+        </div>
+    </div>
 
     <div class="container">
         <div class="playerDesc">
@@ -25,22 +42,22 @@
             <h3>Commandes</h3>
             <br>
             <p>Droite : → <br>
-               Gauche : ← <br>
-               Bas : ↓ <br>
-               Haut : ↑ <br>
+                Gauche : ← <br>
+                Bas : ↓ <br>
+                Haut : ↑ <br>
                 <br>
-               Avancer : 1 <br>
-               Attaquer : 2 <br>
+                Avancer : 1 <br>
+                Attaquer : 2 <br>
             </p>
         </div>
-        
+
         <div class="containerBoard">
-        <div id="board">
-        </div>
+            <div id="board">
+            </div>
         </div>
 
         <div class="playerDesc">
-            <h2 >Player 2</h2>
+            <h2>Player 2</h2>
             <br>
             <p class="pvPlayer2">PV:</p>
             <p class="attPlayer2">Attaque:</p>
@@ -49,17 +66,17 @@
             <h3>Commandes</h3>
             <br>
             <p>Droite : Z <br>
-               Gauche : Q <br>
-               Bas : S <br>
-               Haut : Z <br>
+                Gauche : Q <br>
+                Bas : S <br>
+                Haut : Z <br>
                 <br>
-               Avancer : V <br>
-               Attaquer : B <br>
+                Avancer : V <br>
+                Attaquer : B <br>
             </p>
         </div>
     </div>
 
-        <script src="app.js"></script>
+    <script src="app.js"></script>
     </div>
 </body>
 
