@@ -5,7 +5,7 @@ var app = {
     },
     player1: {
         pv: 20,
-        attaque: 4,
+        attaque: 2,
         defense: 2,
         x: 0,
         y: 0,
@@ -13,7 +13,7 @@ var app = {
     },
     player2: {
         pv: 20,
-        attaque: 4,
+        attaque: 2,
         def: 2,
         x: 0,
         y: 0,
@@ -66,12 +66,20 @@ var app = {
                 row.append(cell);
             }
         }
-        const playerPv = document.querySelector('.pvPlayer1')
-        playerPv.textContent = `Pv: ${app.player1.pv}`;
-        const playerAttaque = document.querySelector('.attPlayer1')
-        playerAttaque.textContent = `Attaque: ${app.player1.attaque}`;
-        const playerDefense = document.querySelector('.defPlayer1')
-        playerDefense.textContent = `Défense: ${app.player1.defense}`;
+        // Valeurs du player 1
+        const player1Pv = document.querySelector('.pvPlayer1')
+        player1Pv.textContent = `Pv: ${app.player1.pv}`;
+        const player1Attaque = document.querySelector('.attPlayer1')
+        player1Attaque.textContent = `Attaque: ${app.player1.attaque}`;
+        const player1Defense = document.querySelector('.defPlayer1')
+        player1Defense.textContent = `Défense: ${app.player1.defense}`;
+        //Valeyrs du player 2
+        const player2Pv = document.querySelector('.pvPlayer2')
+        player2Pv.textContent = `Pv: ${app.player2.pv}`;
+        const player2Attaque = document.querySelector('.attPlayer2')
+        player2Attaque.textContent = `Attaque: ${app.player2.attaque}`;
+        const player2Defense = document.querySelector('.defPlayer2')
+        player2Defense.textContent = `Défense: ${app.player2.defense}`;
     },
 
     //ajout de tous les écouteurs d'evenements
@@ -84,9 +92,10 @@ var app = {
         if (data === 'ArrowRight' || data === 'ArrowLeft' || data === 'ArrowUp' || data === 'ArrowDown') {
             app.turn(data);
         }
-        else if (data === 'KeyD' || data === 'KeyA' || data === 'KeyW' || data === 'KeyS') {
+         if (data === 'KeyD' || data === 'KeyA' || data === 'KeyW' || data === 'KeyS') {
             app.turn(data);
-        } else {
+        } 
+        if (data === 'Numpad1') {
             switch (app.player1.direction) {
                 case 'right':
                     app.player1.x++;
@@ -94,8 +103,8 @@ var app = {
                         app.player1.x = ((app.board.x) - 1);
                         app.removeBoard();
                     }
-                    if ((app.player1.x === app.target.x || app.player2.x === app.target.x) && (app.player1.y === app.target.y || app.player2.y === app.target.y)) {
-                        app.player1.attaque = app.player1.attaque + 6;//+=6
+                    if (app.player1.x === app.target.x  && app.player1.y === app.target.y) {
+                        app.player1.attaque = app.player1.attaque + 4;//+=6
                         console.log(app.player1.attaque)
                         app.removeBoard();
                         // app.drawBoard.cell.classList.remove('cellEnd');
@@ -109,7 +118,7 @@ var app = {
                         app.player1.x = 0;
                         app.removeBoard();
                     }
-                    if ((app.player1.x === app.target.x || app.player2.x === app.target.x) && (app.player1.y === app.target.y || app.player2.y === app.target.y)) {
+                    if (app.player1.x === app.target.x  && app.player1.y === app.target.y ) {
                         app.player1.attaque = app.player1.attaque + 6;//+=6
                         app.removeBoard();
                         // app.drawBoard.cell.classList.remove('cellEnd');
@@ -123,7 +132,7 @@ var app = {
                         app.player1.y = 0;
                         app.removeBoard();
                     }
-                    if ((app.player1.x === app.target.x || app.player2.x === app.target.x) && (app.player1.y === app.target.y || app.player2.y === app.target.y)) {
+                    if (app.player1.x === app.target.x  && app.player1.y === app.target.y) {
                         app.player1.attaque = app.player1.attaque + 6;//+=6
                         console.log(app.player1.attaque)
                         app.removeBoard();
@@ -139,7 +148,7 @@ var app = {
                         app.player1.y = app.board.y - 1;
                         app.removeBoard();
                     }
-                    if ((app.player1.x === app.target.x || app.player2.x === app.target.x) && (app.player1.y === app.target.y || app.player2.y === app.target.y)) {
+                    if (app.player1.x === app.target.x  && app.player1.y === app.target.y) {
                         app.player1.attaque = app.player1.attaque + 6;//+=6
                         console.log(app.player1.attaque)
                         app.removeBoard();
@@ -149,9 +158,11 @@ var app = {
                     app.turn('ArrowDown');
                     break;
             };
+        }
+        if (data === 'KeyV') {
             switch (app.player2.direction) {
                 case 'right':
-                    app.player1.x++;
+                    app.player2.x++;
                     if (app.player2.x > app.board.x - 1) {
                         app.player2.x = ((app.board.x) - 1);
                         app.removeBoard();
@@ -180,9 +191,9 @@ var app = {
                     app.turn('KeyA');
                     break;
                 case 'top':
-                    app.player1.y--;
-                    if (app.player1.y < 0) {
-                        app.player1.y = 0;
+                    app.player2.y--;
+                    if (app.player2.y < 0) {
+                        app.player2.y = 0;
                         app.removeBoard();
                     }
                     if (app.player2.x === app.target.x && app.player2.y === app.target.y) {
@@ -209,7 +220,7 @@ var app = {
                     app.turn('KeyS');
                     break;
             }
-
+            
         }
 
     },

@@ -80,6 +80,19 @@ h1{
 .player2 {
     background-image:url("../images/water.gif");
 }
+.fire {
+    background-image:url("../images/fire.gif");
+}
+.water {
+    background-image:url("../images/water.gif");
+}
+.earth {
+    background-image:url("../images/earth.gif");
+}
+.earth {
+    background-image:url("../images/win.gif");
+}
+
 
 .cellCurrent-top {
     background-position-y:100%;
