@@ -1,0 +1,100 @@
+body{
+    overflow: hidden;
+    background-color: white;
+}
+.container{
+    display: flex;
+    justify-content: space-around;
+
+}
+.playerDesc{
+    background-color: lightgray;
+    width: 20rem;
+    border: 2px solid grey;
+    border-radius: 2rem;
+    height: 30rem;
+    padding: 2rem;
+
+}
+
+
+.header {
+    width: 100vw;
+    height: 6rem;
+    background-image: url("../images/ImageBanner.jpg");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    border-bottom: 2px solid lightgray;
+    
+}
+h1{
+    padding:1rem;
+}
+
+#board {
+    background-image: url("../images/Wallpaper2.jpg");
+    background-size: cover;
+    background-position: center;
+    max-width: 100%;
+    max-height: 100%;
+    border: 1px solid black;
+    box-shadow: 0 0 1rem 1rem lightgrey;
+}
+
+.cellRow {
+    display: flex;
+
+}
+
+.cell {
+    border: 1px solid lightgray;
+    width: 3rem;
+    height: 3rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    font-size: 2em;
+    margin: 1px;
+}
+
+.cellStart {
+    background-color: green;
+}
+
+.cellEnd {
+    background-color: blue;
+}
+
+.cellCurrent {
+   background-image:url("../images/fire.gif");
+   background-position: center;
+   background-position-x: 0%;
+   background-position-y:67.5%;
+   background-size: 8.5rem;
+
+}
+.fire {
+
+}
+
+.cellCurrent-top {
+    background-position-y:100%;
+    background-size: 8.5rem;
+}
+
+.cellCurrent-bottom {
+    background-position-y:0%;
+    background-size: 8.5rem;
+}
+
+.cellCurrent-left {
+    background-position-y:34%;
+    background-size: 8.5rem;
+}
+
+.cellCurrent-right {
+    background-position-y:67.5%;
+    background-size: 8.5rem;
+}
