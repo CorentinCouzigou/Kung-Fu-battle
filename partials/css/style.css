@@ -152,7 +152,21 @@ height: 80%;
 }
 
 h1 {
+   font-size: 2.4rem;
+   color:gray;
     padding: 1rem;
+   
+}
+.imgTitle{
+    width: 6rem;
+    height:6rem;
+}
+h2 {
+    font-size: 1.5rem;
+}
+h3 {
+    font-size: 1.5rem;
+    text-align: center;
 }
 
 #board {
@@ -188,9 +202,9 @@ h1 {
 .target1 {
     background-image: url("../images/d25c1np-bba07146-c752-4864-bf8a-1c19b11f9ed9.png");
     background-position: center;
-    background-position-x: 61%;
+    background-position-x: 61.5%;
     background-position-y: 31%;
-    background-size: 42rem;
+    background-size: 38rem;
 }
 .target2 {
     background-image: url("../images/d25c1np-bba07146-c752-4864-bf8a-1c19b11f9ed9.png");
@@ -199,7 +213,13 @@ h1 {
     background-position-y: 41.5%;
     background-size: 42rem;
 }
-
+.target3 {
+    background-image: url("../images/d25c1np-bba07146-c752-4864-bf8a-1c19b11f9ed9.png");
+    background-position: center;
+    background-position-x: 0%;
+    background-position-y:6.8%;
+    background-size: 36rem;
+}
 .cellCurrent {
     background-position: center;
     background-position-x: 0%;
@@ -239,6 +259,13 @@ h1 {
     background-position-y: 69%;
     background-size: 42rem;
    
+}
+.iceball {
+    background-image: url("../images/d25c1np-bba07146-c752-4864-bf8a-1c19b11f9ed9.png");
+    background-position: center;
+    background-position-x: 17%;
+    background-position-y: 69%;
+    background-size: 42rem;
 }
 
 
