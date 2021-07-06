@@ -220,11 +220,17 @@ var app = {
                 case 'right':
                     app.fireball.x++;
                     app.fireball.active = 'yes';
-                    app.removeBoard();
-                    app.fireballFunction();
-                    // setTimeout(fireBall.classList.remove('fireball'), 3000);
-                    // setTimeout(app.removeBoard(), 4000)
-
+                    if (app.fireball.x === app.player2.x) {
+                        let result = app.player2.pv + app.player2.defense ;
+                        let finalresult = result - app.player1.attaque;
+                        console.log('pvp', finalresult);
+                        app.player2.pv = finalresult;
+                        if (app.player2.pv === 0) {
+                            alert('Player1 Win');
+                            document.location.reload();
+                        }
+                        app.removeBoard();
+                    }
                     if (app.fireball.x === app.board.x) {
                         let fireBall = document.querySelector('.fireball');
                         fireBall.classList.remove('.fireball');
@@ -237,29 +243,9 @@ var app = {
                         fireballFunction();
                         app.removeBoard();
                     }
-                    if ((app.player1.skin === 'fire') && (app.fireball.x === app.player2.x)) {
-                        const result = ((app.player2.pv+app.player2.defense) - app.player1.attaque);
-                        console.log('pvp', result);
-                        app.player2.pv = result;
-                        let fireBall = document.querySelector('.fireball');
-                        fireBall.classList.remove('.fireball');
-                        fireballFunction();
-                        if (app.player2.pv === 0) {
-                            alert('Player1 Win');
-                            app.init();
-                        }
-                        app.removeBoard();
+                    app.removeBoard();
+                    app.fireballFunction();
 
-                    }
-                    if ((app.player2.skin === 'fire') && (app.fireBall.x === app.player1.x)) {
-                        const result = ((app.player1.pv+app.player1.def) - app.player2.attaque);
-                        console.log('pvp', result);
-                        app.player1.pv = result;
-                        let fireBall = document.querySelector('.fireball');
-                        fireBall.classList.remove('.fireball');
-                        fireballFunction();
-                        app.removeBoard();
-                    }
 
             }
         }
