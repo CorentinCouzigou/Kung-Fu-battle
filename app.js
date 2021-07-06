@@ -25,12 +25,12 @@ var app = {
     fireball: {
         x: 0,
         y: 0,
-        active:'no'
+        active: 'no'
     },
-    iceball:{
-        x:0,
-        y:0,
-        active:'no'
+    iceball: {
+        x: 0,
+        y: 0,
+        active: 'no'
     },
     target: {
         x: 0,
@@ -41,12 +41,11 @@ var app = {
         x: 0,
         y: 0
     },
-    target3:{
-        x:0,
-        y:0
+    target3: {
+        x: 0,
+        y: 0
     },
     init: function () {
-        console.log('init');
         app.board.x = 14;
         app.board.y = 10;
         app.target.x = app.randomFunctionX(0, app.board.x - 1);
@@ -59,6 +58,10 @@ var app = {
         app.player2.y = app.board.y - 1;
         app.drawBoard();
         app.allListener();
+        let audio = document.querySelector("#audio");
+        audio.volume = 0.1;
+        audio.play();
+
     },
     randomFunctionX(min, max) {
         return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -74,17 +77,17 @@ var app = {
     fireballFunction() {
         if (app.player1.skin === 'fire') {
             app.fireball.x = app.player1.x;
-            app.fireball.y = app.player1.y;            
+            app.fireball.y = app.player1.y;
         };
         if (app.player2.skin === 'fire') {
             app.fireball.x = app.player2.x;
             app.fireball.y = app.player2.y;
         }
     },
-    iceballFunction () {
+    iceballFunction() {
         if (app.player1.skin === 'water') {
             app.iceball.x = app.player1.x;
-            app.iceball.y = app.player1.y;            
+            app.iceball.y = app.player1.y;
         };
         if (app.player2.skin === 'water') {
             app.iceball.x = app.player2.x;
@@ -92,7 +95,7 @@ var app = {
         }
     },
     drawBoard() {
-        
+
         const board = document.querySelector('#board');
         for (let y = 0; y < app.board.y; y++) {
             const row = document.createElement('div');
@@ -117,7 +120,7 @@ var app = {
                             cell.classList.add('win');
                             break;
                     }
-                   
+
                 }
 
                 if (x === app.target.x && y === app.target.y) {
@@ -150,14 +153,14 @@ var app = {
                 }
                 if ((x === app.fireball.x) && (y === app.fireball.y)) {
                     cell.classList.add('ballhidden');
-                    if(app.fireball.active === 'yes'){
-                        cell.classList.add('fireball');                        
+                    if (app.fireball.active === 'yes') {
+                        cell.classList.add('fireball');
                     }
                 }
                 if ((x === app.iceball.x) && (y === app.iceball.y)) {
                     cell.classList.add('ballhidden');
-                    if(app.iceball.active === 'yes'){
-                        cell.classList.add('iceball');                        
+                    if (app.iceball.active === 'yes') {
+                        cell.classList.add('iceball');
                     }
                 }
                 row.append(cell);
@@ -191,20 +194,19 @@ var app = {
     },
 
     closeModal(event) {
-        console.log(event.currentTarget.value)
         app.countEvent++
         if (app.countEvent === 1) {
             const playerSelection = document.querySelector('.playerSelection');
             playerSelection.textContent = "Choose your character for the Player2";
             event.currentTarget.classList.add('displayNone');
             app.player1.skin = event.currentTarget.value;
-            switch (event.currentTarget.value){
+            switch (event.currentTarget.value) {
                 case ('fire'):
-                app.fireballFunction();
+                    app.fireballFunction();
                 case ('water'):
-                app.waterballFunction();
+                    app.iceballFunction();
             }
-            
+
 
             const buttonSelection = document.querySelectorAll('.buttonSelection');
             for (let button of buttonSelection) {
@@ -213,11 +215,11 @@ var app = {
         }
         if (app.countEvent === 2) {
             app.player2.skin = event.currentTarget.value;
-            switch (event.currentTarget.value){
+            switch (event.currentTarget.value) {
                 case ('fire'):
-                app.fireballFunction();
+                    app.fireballFunction();
                 case ('water'):
-                app.waterballFunction();
+                    app.iceballFunction();
             }
             const modal = document.querySelector('#modalContainer');
             modal.classList.add('displayNone');
@@ -227,7 +229,6 @@ var app = {
 
     moveForward(event) {
         const data = event.code;
-        console.log(event.code);
         if (data === 'ArrowRight' || data === 'ArrowLeft' || data === 'ArrowUp' || data === 'ArrowDown') {
             app.turn(data);
         }
@@ -235,372 +236,485 @@ var app = {
             app.turn(data);
         }
         if (data === 'KeyB') {
-            if (app.player2.skin === 'fire'){
-            switch (app.player2.direction) {
-            
-                case 'right':
-                    app.fireball.x++;
-                    app.fireball.active = 'yes';
-                    if (app.fireball.x === app.player1.x) {
-                        let result = app.player1.pv + app.player1.defense ;
-                        let finalresult = result - app.player2.attaque;
-                        console.log('pvp', finalresult);
-                        app.player1.pv = finalresult;
-                        if (app.player1.pv === 0) {
-                            alert('Player2 Win');
-                            document.location.reload();
+            if (app.player2.skin === 'fire') {
+                switch (app.player2.direction) {
+
+                    case 'right':
+                        app.fireball.x++;
+                        app.fireball.active = 'yes';
+                        if (app.fireball.x === app.player1.x) {
+                            let result = app.player1.pv + app.player1.defense;
+                            let finalresult = result - app.player2.attaque;
+                            app.player1.pv = finalresult;
+                            if (app.player1.pv === 0) {
+                                alert('Player2 Win');
+                                document.location.reload();
+                            }
+                            app.removeBoard();
+                        }
+                        if (app.fireball.x === app.board.x) {
+                            let fireBall = document.querySelector('.fireball');
+                            fireBall.classList.remove('.fireball');
+
+                            app.removeBoard();
+                        }
+                        if (app.fireball.x < 0) {
+                            let fireBall = document.querySelector('.fireball');
+                            fireBall.classList.remove('.fireball');
+                            app.removeBoard();
                         }
                         app.removeBoard();
-                    }
-                    if (app.fireball.x === app.board.x) {
-                        let fireBall = document.querySelector('.fireball');
-                        fireBall.classList.remove('.fireball');
 
-                        app.removeBoard();
-                    }
-                    if (app.fireball.x < 0) {
-                        let fireBall = document.querySelector('.fireball');
-                        fireBall.classList.remove('.fireball');
-                        app.removeBoard();
-                    }
-                    app.removeBoard();
-
-                    break;
+                        break;
                     case 'left':
-                    app.fireball.x--;
-                    app.fireball.active = 'yes';
-                    if (app.fireball.x === app.player1.x) {
-                        let result = app.player1.pv + app.player1.defense ;
-                        let finalresult = result - app.player2.attaque;
-                        app.player1.pv = finalresult;
-                        if (app.player1.pv === 0) {
-                            alert('Player1 Win');
-                            document.location.reload();
+                        app.fireball.x--;
+                        app.fireball.active = 'yes';
+                        if (app.fireball.x === app.player1.x) {
+                            let result = app.player1.pv + app.player1.defense;
+                            let finalresult = result - app.player2.attaque;
+                            app.player1.pv = finalresult;
+                            if (app.player1.pv === 0) {
+                                alert('Player1 Win');
+                                document.location.reload();
+                            }
+                            app.removeBoard();
+                        }
+                        if (app.fireball.x === app.board.x) {
+                            let fireBall = document.querySelector('.fireball');
+                            fireBall.classList.remove('.fireball');
+
+                            app.removeBoard();
+                        }
+                        if (app.fireball.x < 0) {
+                            let fireBall = document.querySelector('.fireball');
+                            fireBall.classList.remove('.fireball');
+
+                            app.removeBoard();
                         }
                         app.removeBoard();
-                    }
-                    if (app.fireball.x === app.board.x) {
-                        let fireBall = document.querySelector('.fireball');
-                        fireBall.classList.remove('.fireball');
 
-                        app.removeBoard();
-                    }
-                    if (app.fireball.x < 0) {
-                        let fireBall = document.querySelector('.fireball');
-                        fireBall.classList.remove('.fireball');
-
-                        app.removeBoard();
-                    }
-                    app.removeBoard();
-
-                    break;
+                        break;
                     case 'top':
-                    app.fireball.y--;
-                    app.fireball.active = 'yes';
-                    if (app.fireball.x === app.player1.x) {
-                        let result = app.player1.pv + app.player1.defense ;
-                        let finalresult = result - app.player1.attaque;
-                        app.player1.pv = finalresult;
-                        if (app.player1.pv === 0) {
-                            alert('Player2 Win');
-                            document.location.reload();
+                        app.fireball.y--;
+                        app.fireball.active = 'yes';
+                        if (app.fireball.x === app.player1.x) {
+                            let result = app.player1.pv + app.player1.defense;
+                            let finalresult = result - app.player1.attaque;
+                            app.player1.pv = finalresult;
+                            if (app.player1.pv === 0) {
+                                alert('Player2 Win');
+                                document.location.reload();
+                            }
+                            app.removeBoard();
                         }
-                        app.removeBoard();
-                    }
-                    if (app.fireball.x === app.board.x) {
-                        let fireBall = document.querySelector('.fireball');
-                        fireBall.classList.remove('.fireball');
+                        if (app.fireball.x === app.board.x) {
+                            let fireBall = document.querySelector('.fireball');
+                            fireBall.classList.remove('.fireball');
 
-                        app.removeBoard();
-                    }
-                    if (app.fireball.x < 0) {
-                        let fireBall = document.querySelector('.fireball');
-                        fireBall.classList.remove('.fireball');
-    
-                        app.removeBoard();
-                    }
-                    app.removeBoard();
-  
-                    break;
-                    case 'bottom':
-                    app.fireball.y++;
-                    app.fireball.active = 'yes';
-                    if (app.fireball.x === app.player1.x) {
-                        let result = app.player1.pv + app.player1.defense ;
-                        let finalresult = result - app.player2.attaque;
-                        console.log('pvp', finalresult);
-                        app.player1.pv = finalresult;
-                        if (app.player1.pv === 0) {
-                            alert('Player2 Win');
-                            document.location.reload();
+                            app.removeBoard();
+                        }
+                        if (app.fireball.x < 0) {
+                            let fireBall = document.querySelector('.fireball');
+                            fireBall.classList.remove('.fireball');
+
+                            app.removeBoard();
                         }
                         app.removeBoard();
-                    }
-                    if (app.fireball.x === app.board.x) {
-                        let fireBall = document.querySelector('.fireball');
-                        fireBall.classList.remove('.fireball');
+
+                        break;
+                    case 'bottom':
+                        app.fireball.y++;
+                        app.fireball.active = 'yes';
+                        if (app.fireball.x === app.player1.x) {
+                            let result = app.player1.pv + app.player1.defense;
+                            let finalresult = result - app.player2.attaque;
+                            app.player1.pv = finalresult;
+                            if (app.player1.pv === 0) {
+                                alert('Player2 Win');
+                                document.location.reload();
+                            }
+                            app.removeBoard();
+                        }
+                        if (app.fireball.x === app.board.x) {
+                            let fireBall = document.querySelector('.fireball');
+                            fireBall.classList.remove('.fireball');
+                            app.removeBoard();
+                        }
+                        if (app.fireball.x < 0) {
+                            let fireBall = document.querySelector('.fireball');
+                            fireBall.classList.remove('.fireball');
+
+                            app.removeBoard();
+                        }
                         app.removeBoard();
-                    }
-                    if (app.fireball.x < 0) {
-                        let fireBall = document.querySelector('.fireball');
-                        fireBall.classList.remove('.fireball');
-  
+                        break;
+                }
+            }
+            if (app.player2.skin === 'water') {
+                switch (app.player2.direction) {
+                    case 'right':
+                        app.iceball.x++;
+                        app.iceball.active = 'yes';
+                        if (app.iceball.x === app.player1.x) {
+                            let result = app.player1.pv + app.player1.defense;
+                            let finalresult = result - app.player2.attaque;
+                            app.player1.pv = finalresult;
+                            if (app.player1.pv === 0) {
+                                alert('Player2 Win');
+                                document.location.reload();
+                            }
+                            app.removeBoard();
+                        }
+                        if (app.iceball.x === app.board.x) {
+                            let iceball = document.querySelector('.iceball');
+                            iceball.classList.remove('.iceball');
+
+                            app.removeBoard();
+                        }
+                        if (app.iceball.x < 0) {
+                            let iceball = document.querySelector('.iceball');
+                            iceball.classList.remove('.iceball');
+                            app.removeBoard();
+                        }
                         app.removeBoard();
-                    }
-                    app.removeBoard();
-                    break;
+
+                        break;
+                    case 'left':
+                        app.iceball.x--;
+                        app.iceball.active = 'yes';
+                        if (app.iceball.x === app.player1.x) {
+                            let result = app.player1.pv + app.player1.defense;
+                            let finalresult = result - app.player2.attaque;
+                            app.player1.pv = finalresult;
+                            if (app.player1.pv === 0) {
+                                alert('Player1 Win');
+                                document.location.reload();
+                            }
+                            app.removeBoard();
+                        }
+                        if (app.iceball.x === app.board.x) {
+                            let iceball = document.querySelector('.iceball');
+                            iceball.classList.remove('.iceball');
+
+                            app.removeBoard();
+                        }
+                        if (app.iceball.x < 0) {
+                            let iceball = document.querySelector('.iceball');
+                            iceball.classList.remove('.iceball');
+
+                            app.removeBoard();
+                        }
+                        app.removeBoard();
+
+                        break;
+                    case 'top':
+                        app.iceball.y--;
+                        app.iceball.active = 'yes';
+                        if (app.iceball.x === app.player1.x) {
+                            let result = app.player1.pv + app.player1.defense;
+                            let finalresult = result - app.player1.attaque;
+                            app.player1.pv = finalresult;
+                            if (app.player1.pv === 0) {
+                                alert('Player2 Win');
+                                document.location.reload();
+                            }
+                            app.removeBoard();
+                        }
+                        if (app.iceball.x === app.board.x) {
+                            let iceball = document.querySelector('.iceball');
+                            iceball.classList.remove('.iceball');
+
+                            app.removeBoard();
+                        }
+                        if (app.iceball.x < 0) {
+                            let iceball = document.querySelector('.iceball');
+                            iceball.classList.remove('.iceball');
+
+                            app.removeBoard();
+                        }
+                        app.removeBoard();
+
+                        break;
+                    case 'bottom':
+                        app.iceball.y++;
+                        app.iceball.active = 'yes';
+                        if (app.iceball.x === app.player1.x) {
+                            let result = app.player1.pv + app.player1.defense;
+                            let finalresult = result - app.player2.attaque;
+                            app.player1.pv = finalresult;
+                            if (app.player1.pv === 0) {
+                                alert('Player2 Win');
+                                document.location.reload();
+                            }
+                            app.removeBoard();
+                        }
+                        if (app.iceball.x === app.board.x) {
+                            let iceball = document.querySelector('.iceball');
+                            iceball.classList.remove('.iceball');
+                            app.removeBoard();
+                        }
+                        if (app.iceball.x < 0) {
+                            let iceball = document.querySelector('.iceball');
+                            iceball.classList.remove('.iceball');
+
+                            app.removeBoard();
+                        }
+                        app.removeBoard();
+                        break;
+                }
             }
         }
-        if (app.player2.skin === 'water'){
-            switch (app.player2.direction) {
-                case 'right':
-                    app.iceball.x++;
-                    app.iceball.active = 'yes';
-                    if (app.iceball.x === app.player1.x) {
-                        let result = app.player1.pv + app.player1.defense ;
-                        let finalresult = result - app.player2.attaque;
-                        console.log('pvp', finalresult);
-                        app.player1.pv = finalresult;
-                        if (app.player1.pv === 0) {
-                            alert('Player2 Win');
-                            document.location.reload();
-                        }
-                        app.removeBoard();
-                    }
-                    if (app.iceball.x === app.board.x) {
-                        let iceball = document.querySelector('.iceball');
-                        iceball.classList.remove('.iceball');
-
-                        app.removeBoard();
-                    }
-                    if (app.iceball.x < 0) {
-                        let iceball = document.querySelector('.iceball');
-                        iceball.classList.remove('.iceball');
-                        app.removeBoard();
-                    }
-                    app.removeBoard();
-
-                    break;
-                    case 'left':
-                    app.iceball.x--;
-                    app.iceball.active = 'yes';
-                    if (app.iceball.x === app.player1.x) {
-                        let result = app.player1.pv + app.player1.defense ;
-                        let finalresult = result - app.player2.attaque;
-                        app.player1.pv = finalresult;
-                        if (app.player1.pv === 0) {
-                            alert('Player1 Win');
-                            document.location.reload();
-                        }
-                        app.removeBoard();
-                    }
-                    if (app.iceball.x === app.board.x) {
-                        let iceball = document.querySelector('.iceball');
-                        iceball.classList.remove('.iceball');
-
-                        app.removeBoard();
-                    }
-                    if (app.iceball.x < 0) {
-                        let iceball = document.querySelector('.iceball');
-                        iceball.classList.remove('.iceball');
-
-                        app.removeBoard();
-                    }
-                    app.removeBoard();
-
-                    break;
-                    case 'top':
-                    app.iceball.y--;
-                    app.iceball.active = 'yes';
-                    if (app.iceball.x === app.player1.x) {
-                        let result = app.player1.pv + app.player1.defense ;
-                        let finalresult = result - app.player1.attaque;
-                        app.player1.pv = finalresult;
-                        if (app.player1.pv === 0) {
-                            alert('Player2 Win');
-                            document.location.reload();
-                        }
-                        app.removeBoard();
-                    }
-                    if (app.iceball.x === app.board.x) {
-                        let iceball = document.querySelector('.iceball');
-                        iceball.classList.remove('.iceball');
-
-                        app.removeBoard();
-                    }
-                    if (app.iceball.x < 0) {
-                        let iceball = document.querySelector('.iceball');
-                        iceball.classList.remove('.iceball');
-    
-                        app.removeBoard();
-                    }
-                    app.removeBoard();
-  
-                    break;
-                    case 'bottom':
-                    app.iceball.y++;
-                    app.iceball.active = 'yes';
-                    if (app.iceball.x === app.player1.x) {
-                        let result = app.player1.pv + app.player1.defense ;
-                        let finalresult = result - app.player2.attaque;
-                        console.log('pvp', finalresult);
-                        app.player1.pv = finalresult;
-                        if (app.player1.pv === 0) {
-                            alert('Player2 Win');
-                            document.location.reload();
-                        }
-                        app.removeBoard();
-                    }
-                    if (app.iceball.x === app.board.x) {
-                        let iceball = document.querySelector('.iceball');
-                        iceball.classList.remove('.iceball');
-                        app.removeBoard();
-                    }
-                    if (app.iceball.x < 0) {
-                        let iceball = document.querySelector('.iceball');
-                        iceball.classList.remove('.iceball');
-  
-                        app.removeBoard();
-                    }
-                    app.removeBoard();
-                    break;
-            }
-    }
         if (data === 'Numpad2') {
-            if (app.player1.skin === 'fire'){
-            switch (app.player1.direction) {
-                case 'right':
-                    app.fireball.x++;
-                    app.fireball.active = 'yes';
-                    if (app.fireball.x === app.player2.x) {
-                        let result = app.player2.pv + app.player2.defense ;
-                        let finalresult = result - app.player1.attaque;
-                        console.log('pvp', finalresult);
-                        app.player2.pv = finalresult;
-                        if (app.player2.pv === 0) {
-                            alert('Player1 Win');
-                            document.location.reload();
+            if (app.player1.skin === 'fire') {
+                switch (app.player1.direction) {
+                    case 'right':
+                        app.fireball.x++;
+                        app.fireball.active = 'yes';
+                        if (app.fireball.x === app.player2.x) {
+                            let result = app.player2.pv + app.player2.defense;
+                            let finalresult = result - app.player1.attaque;
+                            app.player2.pv = finalresult;
+                            if (app.player2.pv === 0) {
+                                alert('Player1 Win');
+                                document.location.reload();
+                            }
+                            app.removeBoard();
                         }
-                        app.removeBoard();
-                    }
-                    if (app.fireball.x === app.board.x) {
-                        let fireBall = document.querySelector('.fireball');
-                        fireBall.classList.remove('.fireball');
-                       
-                        app.removeBoard();
-                    }
-                    if (app.fireball.x < 0) {
-                        let fireBall = document.querySelector('.fireball');
-                        fireBall.classList.remove('.fireball');
-                        
-                        app.removeBoard();
-                    }
-                    app.removeBoard();
-                   
-                    break;
-                    case 'left':
-                    app.fireball.x--;
-                    app.fireball.active = 'yes';
-                    if (app.fireball.x === app.player2.x) {
-                        let result = app.player2.pv + app.player2.defense ;
-                        let finalresult = result - app.player1.attaque;
-                        console.log('pvp', finalresult);
-                        app.player2.pv = finalresult;
-                        if (app.player2.pv === 0) {
-                            alert('Player1 Win');
-                            document.location.reload();
-                        }
-                        app.removeBoard();
-                    }
-                    if (app.fireball.x === app.board.x) {
-                        let fireBall = document.querySelector('.fireball');
-                        fireBall.classList.remove('.fireball');
-                        app.removeBoard();
-                    }
-                    if (app.fireball.x < 0) {
-                        let fireBall = document.querySelector('.fireball');
-                        fireBall.classList.remove('.fireball'); 
-                        app.removeBoard();
-                    }
-                    app.removeBoard();
-                   
-                    break;
-                    case 'top':
-                    app.fireball.y--;
-                    app.fireball.active = 'yes';
-                    if (app.fireball.x === app.player2.x) {
-                        let result = app.player2.pv + app.player2.defense ;
-                        let finalresult = result - app.player1.attaque;
-                        console.log('pvp', finalresult);
-                        app.player2.pv = finalresult;
-                        if (app.player2.pv === 0) {
-                            alert('Player1 Win');
-                            document.location.reload();
-                        }
-                        app.removeBoard();
-                    }
-                    if (app.fireball.x === app.board.x) {
-                        let fireBall = document.querySelector('.fireball');
-                        fireBall.classList.remove('.fireball');
-                       
-                        app.removeBoard();
-                    }
-                    if (app.fireball.x < 0) {
-                        let fireBall = document.querySelector('.fireball');
-                        fireBall.classList.remove('.fireball');
-                        
-                        app.removeBoard();
-                    }
-                    app.removeBoard();
-                
-                    break;
-                    case 'bottom':
-                    app.fireball.y++;
-                    app.fireball.active = 'yes';
-                    if (app.fireball.x === app.player2.x) {
-                        let result = app.player2.pv + app.player2.defense ;
-                        let finalresult = result - app.player1.attaque;
-                        console.log('pvp', finalresult);
-                        app.player2.pv = finalresult;
-                        if (app.player2.pv === 0) {
-                            alert('Player1 Win');
-                            document.location.reload();
-                        }
-                        app.removeBoard();
-                    }
-                    if (app.fireball.x === app.board.x) {
-                        let fireBall = document.querySelector('.fireball');
-                        fireBall.classList.remove('.fireball');
-                       
-                        app.removeBoard();
-                    }
-                    if (app.fireball.x < 0) {
-                        let fireBall = document.querySelector('.fireball');
-                        fireBall.classList.remove('.fireball');
-               
-                        app.removeBoard();
-                    }
-                    app.removeBoard();
-                
-                    break;
-                    
+                        if (app.fireball.x === app.board.x) {
+                            let fireBall = document.querySelector('.fireball');
+                            fireBall.classList.remove('.fireball');
 
+                            app.removeBoard();
+                        }
+                        if (app.fireball.x < 0) {
+                            let fireBall = document.querySelector('.fireball');
+                            fireBall.classList.remove('.fireball');
+
+                            app.removeBoard();
+                        }
+                        app.removeBoard();
+
+                        break;
+                    case 'left':
+                        app.fireball.x--;
+                        app.fireball.active = 'yes';
+                        if (app.fireball.x === app.player2.x) {
+                            let result = app.player2.pv + app.player2.defense;
+                            let finalresult = result - app.player1.attaque;
+                            app.player2.pv = finalresult;
+                            if (app.player2.pv === 0) {
+                                alert('Player1 Win');
+                                document.location.reload();
+                            }
+                            app.removeBoard();
+                        }
+                        if (app.fireball.x === app.board.x) {
+                            let fireBall = document.querySelector('.fireball');
+                            fireBall.classList.remove('.fireball');
+                            app.removeBoard();
+                        }
+                        if (app.fireball.x < 0) {
+                            let fireBall = document.querySelector('.fireball');
+                            fireBall.classList.remove('.fireball');
+                            app.removeBoard();
+                        }
+                        app.removeBoard();
+
+                        break;
+                    case 'top':
+                        app.fireball.y--;
+                        app.fireball.active = 'yes';
+                        if (app.fireball.x === app.player2.x) {
+                            let result = app.player2.pv + app.player2.defense;
+                            let finalresult = result - app.player1.attaque;
+                            app.player2.pv = finalresult;
+                            if (app.player2.pv === 0) {
+                                alert('Player1 Win');
+                                document.location.reload();
+                            }
+                            app.removeBoard();
+                        }
+                        if (app.fireball.x === app.board.x) {
+                            let fireBall = document.querySelector('.fireball');
+                            fireBall.classList.remove('.fireball');
+
+                            app.removeBoard();
+                        }
+                        if (app.fireball.x < 0) {
+                            let fireBall = document.querySelector('.fireball');
+                            fireBall.classList.remove('.fireball');
+
+                            app.removeBoard();
+                        }
+                        app.removeBoard();
+
+                        break;
+                    case 'bottom':
+                        app.fireball.y++;
+                        app.fireball.active = 'yes';
+                        if (app.fireball.x === app.player2.x) {
+                            let result = app.player2.pv + app.player2.defense;
+                            let finalresult = result - app.player1.attaque;
+                            app.player2.pv = finalresult;
+                            if (app.player2.pv === 0) {
+                                alert('Player1 Win');
+                                document.location.reload();
+                            }
+                            app.removeBoard();
+                        }
+                        if (app.fireball.x === app.board.x) {
+                            let fireBall = document.querySelector('.fireball');
+                            fireBall.classList.remove('.fireball');
+
+                            app.removeBoard();
+                        }
+                        if (app.fireball.x < 0) {
+                            let fireBall = document.querySelector('.fireball');
+                            fireBall.classList.remove('.fireball');
+
+                            app.removeBoard();
+                        }
+                        app.removeBoard();
+
+                        break;
+
+
+
+                }
+            }
+            if (app.player1.skin === 'water') {
+                switch (app.player1.direction) {
+                    case 'right':
+                        app.iceball.x++;
+                        app.iceball.active = 'yes';
+                        if (app.iceball.x === app.player2.x) {
+                            let result = app.player2.pv + app.player2.defense;
+                            let finalresult = result - app.player1.attaque;
+                            app.player2.pv = finalresult;
+                            if (app.player2.pv === 0) {
+                                alert('Player1 Win');
+                                document.location.reload();
+                            }
+                            app.removeBoard();
+                        }
+                        if (app.iceball.x === app.board.x) {
+                            let iceball = document.querySelector('.iceball');
+                            iceball.classList.remove('.iceball');
+
+                            app.removeBoard();
+                        }
+                        if (app.iceball.x < 0) {
+                            let iceball = document.querySelector('.iceball');
+                            iceball.classList.remove('.iceball');
+
+                            app.removeBoard();
+                        }
+                        app.removeBoard();
+
+                        break;
+                    case 'left':
+                        app.iceball.x--;
+                        app.iceball.active = 'yes';
+                        if (app.iceball.x === app.player2.x) {
+                            let result = app.player2.pv + app.player2.defense;
+                            let finalresult = result - app.player1.attaque;
+    
+                            app.player2.pv = finalresult;
+                            if (app.player2.pv === 0) {
+                                alert('Player1 Win');
+                                document.location.reload();
+                            }
+                            app.removeBoard();
+                        }
+                        if (app.iceball.x === app.board.x) {
+                            let iceball = document.querySelector('.iceball');
+                            iceball.classList.remove('.iceball');
+                            app.removeBoard();
+                        }
+                        if (app.iceball.x < 0) {
+                            let iceball = document.querySelector('.iceball');
+                            iceball.classList.remove('.iceball');
+                            app.removeBoard();
+                        }
+                        app.removeBoard();
+
+                        break;
+                    case 'top':
+                        app.iceball.y--;
+                        app.iceball.active = 'yes';
+                        if (app.iceball.x === app.player2.x) {
+                            let result = app.player2.pv + app.player2.defense;
+                            let finalresult = result - app.player1.attaque;
+                            app.player2.pv = finalresult;
+                            if (app.player2.pv === 0) {
+                                alert('Player1 Win');
+                                document.location.reload();
+                            }
+                            app.removeBoard();
+                        }
+                        if (app.iceball.x === app.board.x) {
+                            let iceball = document.querySelector('.iceball');
+                            iceball.classList.remove('.iceball');
+
+                            app.removeBoard();
+                        }
+                        if (app.iceball.x < 0) {
+                            let iceball = document.querySelector('.iceball');
+                            iceball.classList.remove('.iceball');
+
+                            app.removeBoard();
+                        }
+                        app.removeBoard();
+
+                        break;
+                    case 'bottom':
+                        app.iceball.y++;
+                        app.iceball.active = 'yes';
+                        if (app.iceball.x === app.player2.x) {
+                            let result = app.player2.pv + app.player2.defense;
+                            let finalresult = result - app.player1.attaque;
+                            app.player2.pv = finalresult;
+                            if (app.player2.pv === 0) {
+                                alert('Player1 Win');
+                                document.location.reload();
+                            }
+                            app.removeBoard();
+                        }
+                        if (app.iceball.x === app.board.x) {
+                            let iceball = document.querySelector('.iceball');
+                            iceball.classList.remove('.iceball');
+
+                            app.removeBoard();
+                        }
+                        if (app.iceball.x < 0) {
+                            let iceball = document.querySelector('.iceball');
+                            iceball.classList.remove('.iceball');
+
+                            app.removeBoard();
+                        }
+                        app.removeBoard();
+
+                        break;
+
+
+
+                }
 
             }
         }
-    }
         if (data === 'Numpad1') {
+            if(app.player1.skin ==="fire"){
             switch (app.player1.direction) {
                 case 'right':
                     app.player1.x++;
                     app.fireballFunction();
-                    if(app.fireball.active === 'yes'){
+                    if (app.fireball.active === 'yes') {
                         app.fireball.active = 'no';
 
-                       let cellFire = document.querySelector('.fireball')
+                        let cellFire = document.querySelector('.fireball')
                         cellFire.classList.remove('.fireball')
                     }
-                    
+
                     if (app.player1.x > app.board.x - 1) {
                         app.player1.x = ((app.board.x) - 1);
                         app.removeBoard();
@@ -629,7 +743,7 @@ var app = {
                 case 'left':
                     app.player1.x--;
                     app.fireballFunction();
-                    if( app.fireball.active === 'yes'){
+                    if (app.fireball.active === 'yes') {
                         app.fireball.active = 'no';
                         cellFire = document.querySelector('.fireball')
                         cellFire.classList.remove('.fireball')
@@ -663,7 +777,7 @@ var app = {
                 case 'top':
                     app.player1.y--;
                     app.fireballFunction();
-                    if( app.fireball.active === 'yes'){
+                    if (app.fireball.active === 'yes') {
                         app.fireball.active = 'no';
                         cellFire = document.querySelector('.fireball')
                         cellFire.classList.remove('.fireball')
@@ -697,7 +811,7 @@ var app = {
                 case 'bottom':
                     app.player1.y++;
                     app.fireballFunction();
-                    if( app.fireball.active === 'yes'){
+                    if (app.fireball.active === 'yes') {
                         app.fireball.active = 'no';
                         cellFire = document.querySelector('.fireball')
                         cellFire.classList.remove('.fireball')
@@ -730,25 +844,167 @@ var app = {
                     break;
             };
         }
+        if(app.player1.skin ==="water"){
+            switch (app.player1.direction) {
+                case 'right':
+                    app.player1.x++;
+                    app.iceballFunction();
+                    if (app.iceball.active === 'yes') {
+                        app.iceball.active = 'no';
+
+                        let cellFire = document.querySelector('.iceball')
+                        cellFire.classList.remove('.iceball')
+                    }
+
+                    if (app.player1.x > app.board.x - 1) {
+                        app.player1.x = ((app.board.x) - 1);
+                        app.removeBoard();
+                    }
+                    if (app.player1.x === app.target.x && app.player1.y === app.target.y) {
+                        app.player1.attaque = app.player1.attaque + 6;//+=6
+                        app.target.x = app.randomFunctionX(0, app.board.x - 1);
+                        app.target.y = app.randomFunctionY(0, app.board.y - 1);
+                        app.removeBoard();
+                    }
+                    if (app.player1.x === app.target2.x && app.player1.y === app.target2.y) {
+                        app.player1.defense = app.player1.defense + 3;//+=6
+                        app.target2.x = app.randomFunctionX(0, app.board.x - 1);
+                        app.target2.y = app.randomFunctionY(0, app.board.y - 1);
+                        app.removeBoard();
+                    }
+                    if (app.player1.x === app.target3.x && app.player1.y === app.target3.y) {
+                        app.player1.pv = app.player1.pv + 3;//+=6
+                        app.target3.x = app.randomFunctionX(0, app.board.x - 1);
+                        app.target3.y = app.randomFunctionY(0, app.board.y - 1);
+                        app.removeBoard();
+                    }
+                    app.removeBoard();
+                    app.turn('ArrowRight');
+                    break;
+                case 'left':
+                    app.player1.x--;
+                    app.iceballFunction();
+                    if (app.iceball.active === 'yes') {
+                        app.iceball.active = 'no';
+                        cellFire = document.querySelector('.iceball')
+                        cellFire.classList.remove('.iceball')
+                    }
+                    if (app.player1.x < 0) {
+                        app.player1.x = 0;
+                        app.removeBoard();
+                    }
+                    if (app.player1.x === app.target.x && app.player1.y === app.target.y) {
+                        app.player1.attaque = app.player1.attaque + 6;//+=6
+                        app.target.x = app.randomFunctionX(0, app.board.x - 1);
+                        app.target.y = app.randomFunctionY(0, app.board.y - 1);
+                        app.removeBoard();
+                        // app.drawBoard.cell.classList.remove('cellEnd');
+                    }
+                    if (app.player1.x === app.target2.x && app.player1.y === app.target2.y) {
+                        app.player1.defense = app.player1.defense + 3;//+=6
+                        app.target2.x = app.randomFunctionX(0, app.board.x - 1);
+                        app.target2.y = app.randomFunctionY(0, app.board.y - 1);
+                        app.removeBoard();
+                    }
+                    if (app.player1.x === app.target3.x && app.player1.y === app.target3.y) {
+                        app.player1.pv = app.player1.pv + 3;//+=6
+                        app.target3.x = app.randomFunctionX(0, app.board.x - 1);
+                        app.target3.y = app.randomFunctionY(0, app.board.y - 1);
+                        app.removeBoard();
+                    }
+                    app.removeBoard();
+                    app.turn('ArrowLeft');
+                    break;
+                case 'top':
+                    app.player1.y--;
+                    app.iceballFunction();
+                    if (app.iceball.active === 'yes') {
+                        app.iceball.active = 'no';
+                        cellFire = document.querySelector('.iceball')
+                        cellFire.classList.remove('.iceball')
+                    }
+                    if (app.player1.y < 0) {
+                        app.player1.y = 0;
+                        app.removeBoard();
+                    }
+                    if (app.player1.x === app.target.x && app.player1.y === app.target.y) {
+                        app.player1.attaque = app.player1.attaque + 6;//+=6
+                        app.target.x = app.randomFunctionX(0, app.board.x - 1);
+                        app.target.y = app.randomFunctionY(0, app.board.y - 1);
+                        app.removeBoard();
+                        // app.drawBoard.cell.classList.remove('cellEnd');
+                    }
+                    if (app.player1.x === app.target2.x && app.player1.y === app.target2.y) {
+                        app.player1.defense = app.player1.defense + 3;//+=6
+                        app.target2.x = app.randomFunctionX(0, app.board.x - 1);
+                        app.target2.y = app.randomFunctionY(0, app.board.y - 1);
+                        app.removeBoard();
+                    }
+                    if (app.player1.x === app.target3.x && app.player1.y === app.target3.y) {
+                        app.player1.pv = app.player1.pv + 3;//+=6
+                        app.target3.x = app.randomFunctionX(0, app.board.x - 1);
+                        app.target3.y = app.randomFunctionY(0, app.board.y - 1);
+                        app.removeBoard();
+                    }
+                    app.removeBoard();
+                    app.turn('ArrowUp');
+                    break;
+                case 'bottom':
+                    app.player1.y++;
+                    app.iceballFunction();
+                    if (app.iceball.active === 'yes') {
+                        app.iceball.active = 'no';
+                        cellFire = document.querySelector('.iceball')
+                        cellFire.classList.remove('.iceball')
+                    }
+                    if (app.player1.y > app.board.y - 1) {
+                        app.player1.y = app.board.y - 1;
+                        app.removeBoard();
+                    }
+                    if (app.player1.x === app.target.x && app.player1.y === app.target.y) {
+                        app.player1.attaque = app.player1.attaque + 6;//+=6
+                        app.target.x = app.randomFunctionX(0, app.board.x - 1);
+                        app.target.y = app.randomFunctionY(0, app.board.y - 1);
+                        app.removeBoard();
+                        // app.drawBoard.cell.classList.remove('cellEnd');
+                    }
+                    if (app.player1.x === app.target2.x && app.player1.y === app.target2.y) {
+                        app.player1.defense = app.player1.defense + 3;//+=6
+                        app.target2.x = app.randomFunctionX(0, app.board.x - 1);
+                        app.target2.y = app.randomFunctionY(0, app.board.y - 1);
+                        app.removeBoard();
+                    }
+                    if (app.player1.x === app.target3.x && app.player1.y === app.target3.y) {
+                        app.player1.pv = app.player1.pv + 3;//+=6
+                        app.target3.x = app.randomFunctionX(0, app.board.x - 1);
+                        app.target3.y = app.randomFunctionY(0, app.board.y - 1);
+                        app.removeBoard();
+                    }
+                    app.removeBoard();
+                    app.turn('ArrowDown');
+                    break;
+            };
+        }
+    }
         if (data === 'KeyV') {
             switch (app.player2.direction) {
                 case 'right':
                     app.player2.x++;
-                    app.fireballFunction();
-                    if( app.fireball.active === 'yes'){
-                        app.fireball.active = 'no';
-                        cellFire = document.querySelector('.fireball')
-                        cellFire.classList.remove('.fireball')
+                    app.iceballFunction();
+                    if (app.iceball.active === 'yes') {
+                        app.iceball.active = 'no';
+                        cellFire = document.querySelector('.iceball')
+                        cellFire.classList.remove('.iceball')
                     }
                     if (app.player2.x > app.board.x - 1) {
-                        app.player2.x = ((app.board.x) - 1); 
+                        app.player2.x = ((app.board.x) - 1);
                     }
                     if (app.player2.x === app.target.x && app.player2.y === app.target.y) {
                         app.player2.attaque = app.player2.attaque + 6;//+=6
                         app.target.x = app.randomFunctionX(0, app.board.x - 1);
                         app.target.y = app.randomFunctionY(0, app.board.y - 1);
                         app.removeBoard();
-               
+
                     }
                     if (app.player2.x === app.target2.x && app.player2.y === app.target2.y) {
                         app.player2.defense = app.player2.defense + 3;//+=6
@@ -767,11 +1023,11 @@ var app = {
                     break;
                 case 'left':
                     app.player2.x--;
-                    app.fireballFunction();
-                    if( app.fireball.active === 'yes'){
-                        app.fireball.active = 'no';
-                        cellFire = document.querySelector('.fireball')
-                        cellFire.classList.remove('.fireball')
+                    app.iceballFunction();
+                    if (app.iceball.active === 'yes') {
+                        app.iceball.active = 'no';
+                        cellFire = document.querySelector('.iceball')
+                        cellFire.classList.remove('.iceball')
                     }
                     if (app.player2.x < 0) {
                         app.player2.x = 0;
@@ -796,17 +1052,17 @@ var app = {
                         app.target3.y = app.randomFunctionY(0, app.board.y - 1);
                         app.removeBoard();
                     }
-                    
+
                     app.removeBoard();
                     app.turn('KeyA');
                     break;
                 case 'top':
                     app.player2.y--;
-                    app.fireballFunction();
-                    if( app.fireball.active === 'yes'){
-                        app.fireball.active = 'no';
-                        cellFire = document.querySelector('.fireball')
-                        cellFire.classList.remove('.fireball')
+                    app.iceballFunction();
+                    if (app.iceball.active === 'yes') {
+                        app.iceball.active = 'no';
+                        cellFire = document.querySelector('.iceball')
+                        cellFire.classList.remove('.iceball')
                     }
                     if (app.player2.y < 0) {
                         app.player2.y = 0;
@@ -831,17 +1087,17 @@ var app = {
                         app.target3.y = app.randomFunctionY(0, app.board.y - 1);
                         app.removeBoard();
                     }
-                   
+
                     app.removeBoard();
                     app.turn('KeyW');
                     break;
                 case 'bottom':
                     app.player2.y++;
-                    app.fireballFunction();
-                    if( app.fireball.active === 'yes'){
-                        app.fireball.active = 'no';
-                        cellFire = document.querySelector('.fireball')
-                        cellFire.classList.remove('.fireball')
+                    app.iceballFunction();
+                    if (app.iceball.active === 'yes') {
+                        app.iceball.active = 'no';
+                        cellFire = document.querySelector('.iceball')
+                        cellFire.classList.remove('.iceball')
                     }
                     if (app.player2.y > app.board.y - 1) {
                         app.player2.y = app.board.y - 1;
