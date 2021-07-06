@@ -3,7 +3,7 @@ var app = {
         x: 0,
         y: 0
     },
-    countEvent : 0,
+    countEvent: 0,
     player1: {
         pv: 20,
         attaque: 2,
@@ -16,20 +16,24 @@ var app = {
     player2: {
         pv: 20,
         attaque: 2,
-        def: 2,
+        defense: 2,
         x: 0,
         y: 0,
         direction: 'left',
-        skin:'fire'
+        skin: 'fire'
     },
     fireball: {
-        x:0,
-        y:0
+        x: 0,
+        y: 0
     },
     target: {
         x: 0,
         y: 0,
-        emplacement:'depart'
+       
+    },
+    target2: {
+        x:0,
+        y:0
     },
     init: function () {
         console.log('init');
@@ -37,8 +41,10 @@ var app = {
         app.board.y = 10;
         app.target.x = app.randomFunctionX(0, app.board.x - 1);
         app.target.y = app.randomFunctionY(0, app.board.y - 1);
-        app.player2.x = app.board.x-1;
-        app.player2.y = app.board.y-1;
+        app.target2.x = app.randomFunctionX(0, app.board.x - 1);
+        app.target2.y = app.randomFunctionY(0, app.board.y - 1);
+        app.player2.x = app.board.x - 1;
+        app.player2.y = app.board.y - 1;
         app.drawBoard();
         app.allListener();
     },
@@ -53,6 +59,16 @@ var app = {
         app.drawBoard();
     },
     //création du plateau de jeu
+    fireballFunction() {
+        if (app.player1.skin === 'fire' ) {
+            app.fireball.x = app.player1.x;
+            app.fireball.y = app.player1.y ;
+        };
+        if (app.player2.skin === 'fire') {
+            app.fireball.x =  app.player2.x;
+            app.fireball.y = app.player2.y;
+        }
+    },
     drawBoard() {
         const board = document.querySelector('#board');
         for (let y = 0; y < app.board.y; y++) {
@@ -64,7 +80,7 @@ var app = {
                 cell.classList.add('cell');
                 if (x == app.player1.x && y == app.player1.y) {
                     cell.classList.add('cellCurrent', 'player1');
-                    switch (app.player1.skin){
+                    switch (app.player1.skin) {
                         case 'fire':
                             cell.classList.add('fire');
                             break;
@@ -77,14 +93,24 @@ var app = {
                         case 'win':
                             cell.classList.add('win');
                             break;
+                    }
+                    if (app.fireball.x === app.player1.x) {
+                        app.fireball.x = app.player1.x;
+                        app.fireball.y = app.player1.y;
+                        cell.classList.add('fireBallHidden');
+                        console.log('salut');
                     }
                 }
                 if (x === app.target.x && y === app.target.y) {
-                    cell.classList.add('cellEnd');                    
+                    cell.classList.add('target1');
                 }
+                if (x === app.target2.x && y === app.target.y){
+                    cell.classList.add('target2')
+                }
+
                 if (x == app.player2.x && y == app.player2.y) {
                     cell.classList.add('cellCurrent', 'player2');
-                    switch (app.player2.skin){
+                    switch (app.player2.skin) {
                         case 'fire':
                             cell.classList.add('fire');
                             break;
@@ -98,6 +124,12 @@ var app = {
                             cell.classList.add('win');
                             break;
                     }
+                if (app.fireball.x === app.player2.x) {
+                    app.fireball.x = app.player2.x;
+                    app.fireball.y = app.player2.y;
+                    cell.classList.add('fireBallHidden');
+                    console.log('salut2');
+                }
                 }
                 row.append(cell);
             }
@@ -117,46 +149,46 @@ var app = {
         const player2Defense = document.querySelector('.defPlayer2')
         player2Defense.textContent = `Défense: ${app.player2.defense}`;
 
-        if (app.player1.skin === 'fire' || app.player2.skin === 'fire'){
-            app.fireball.x = (app.player1.x || app.player2.x);
-            app.fireball.y = (app.player1.y || app.player2.y);
-        }
+
     },
 
     //ajout de tous les écouteurs d'evenements
     allListener() {
         document.addEventListener('keyup', app.moveForward);
         const buttonSelection = document.querySelectorAll('.buttonSelection');
-        for (let button of buttonSelection){
+        for (let button of buttonSelection) {
             button.addEventListener('click', app.closeModal)
         }
     },
 
-    closeModal (event){
+    closeModal(event) {
         console.log(event.currentTarget.value)
         app.countEvent++
-        if (app.countEvent === 1){
-            console.log('iteration',event.currentTarget.value);
+        if (app.countEvent === 1) {
+            console.log('iteration', event.currentTarget.value);
             const playerSelection = document.querySelector('.playerSelection');
             playerSelection.textContent = "Choose your character for the Player2";
             event.currentTarget.classList.add('displayNone');
-            
+
             app.player1.skin = event.currentTarget.value;
+            app.fireballFunction();
             const buttonSelection = document.querySelectorAll('.buttonSelection');
-            for (let button of buttonSelection){
+
+            for (let button of buttonSelection) {
                 button.addEventListener('click', app.closeModal)
             }
         }
-        if (app.countEvent === 2){
+        if (app.countEvent === 2) {
             app.player2.skin = event.currentTarget.value;
+            app.fireballFunction();
             const modal = document.querySelector('#modalContainer');
             modal.classList.add('displayNone');
             app.removeBoard();
         }
-        
-   
 
-        
+
+
+
     },
 
     moveForward(event) {
@@ -165,14 +197,54 @@ var app = {
         if (data === 'ArrowRight' || data === 'ArrowLeft' || data === 'ArrowUp' || data === 'ArrowDown') {
             app.turn(data);
         }
-         if (data === 'KeyD' || data === 'KeyA' || data === 'KeyW' || data === 'KeyS') {
+        if (data === 'KeyD' || data === 'KeyA' || data === 'KeyW' || data === 'KeyS') {
             app.turn(data);
-        } 
-        if (data === 'KeyB'){
+        }
+        if (data === 'KeyB') {
 
         }
-        if (data === 'Numpad2'){
-            app.player1.direction
+        if (data === 'Numpad2') {
+            switch (app.player1.direction) {
+                case 'right':
+                    for (let i = 0; i <= app.board.x; i++) {
+                        let fireBall = document.querySelector('.fireBallHidden');
+                        fireBall.classList.add('fireball');
+                        app.fireball.x++;
+                        app.removeBoard();
+
+                        if (app.fireball.x === app.board.x) {
+                            let fireBall = document.querySelector('.fireBallHidden');
+                            fireBall.classList.remove('fireball');
+                            fireballFunction();
+                            app.removeBoard();
+                        }
+                        if (app.fireball.x < 0) {
+                            let fireBall = document.querySelector('.fireBallHidden');
+                            fireBall.classList.remove('fireball');
+                            fireballFunction();
+                            app.removeBoard();
+                        }
+                        if ((app.player1.skin === 'fire') && (app.fireball.x === app.player2.x)) {
+                            const result = (app.player2.pv - app.player1.attaque);
+                            console.log('pvp', result);
+                            app.player2.pv = result;
+                            let fireBall = document.querySelector('.fireBallHidden');
+                            fireBall.classList.remove('fireball');
+                            fireballFunction();
+                            app.removeBoard();
+
+                        }
+                        if ((app.player2.skin === 'fire') && (app.fireBall.x === app.player1.x)) {
+                            const result = (app.player1.pv - app.player2.attaque);
+                            console.log('pvp', result);
+                            app.player1.pv = result;
+                            let fireBall = document.querySelector('.fireBallHidden');
+                            fireBall.classList.remove('fireball');
+                            fireballFunction();
+                            app.removeBoard();
+                        }
+                    }
+            }
         }
         if (data === 'Numpad1') {
             switch (app.player1.direction) {
@@ -182,14 +254,17 @@ var app = {
                         app.player1.x = ((app.board.x) - 1);
                         app.removeBoard();
                     }
-                    if (app.player1.x === app.target.x  && app.player1.y === app.target.y) {
+                    if (app.player1.x === app.target.x && app.player1.y === app.target.y) {
                         app.player1.attaque = app.player1.attaque + 2;//+=6
-                        console.log(app.player1.attaque)
                         app.target.x = app.randomFunctionX(0, app.board.x - 1);
                         app.target.y = app.randomFunctionY(0, app.board.y - 1);
                         app.removeBoard();
-                        
-                        // app.drawBoard.cell.classList.remove('cellEnd');
+                    }
+                    if (app.player1.x === app.target2.x && app.player1.y === app.target2.y) {
+                        app.player1.defense = app.player1.defense + 2;//+=6
+                        app.target2.x = app.randomFunctionX(0, app.board.x - 1);
+                        app.target2.y = app.randomFunctionY(0, app.board.y - 1);
+                        app.removeBoard();
                     }
                     app.removeBoard();
                     app.turn('ArrowRight');
@@ -200,12 +275,18 @@ var app = {
                         app.player1.x = 0;
                         app.removeBoard();
                     }
-                    if (app.player1.x === app.target.x  && app.player1.y === app.target.y ) {
+                    if (app.player1.x === app.target.x && app.player1.y === app.target.y) {
                         app.player1.attaque = app.player1.attaque + 2;//+=6
                         app.target.x = app.randomFunctionX(0, app.board.x - 1);
                         app.target.y = app.randomFunctionY(0, app.board.y - 1);
                         app.removeBoard();
                         // app.drawBoard.cell.classList.remove('cellEnd');
+                    }
+                    if (app.player1.x === app.target2.x && app.player1.y === app.target2.y) {
+                        app.player1.defense = app.player1.defense + 2;//+=6
+                        app.target2.x = app.randomFunctionX(0, app.board.x - 1);
+                        app.target2.y = app.randomFunctionY(0, app.board.y - 1);
+                        app.removeBoard();
                     }
                     app.removeBoard();
                     app.turn('ArrowLeft');
@@ -216,12 +297,18 @@ var app = {
                         app.player1.y = 0;
                         app.removeBoard();
                     }
-                    if (app.player1.x === app.target.x  && app.player1.y === app.target.y) {
+                    if (app.player1.x === app.target.x && app.player1.y === app.target.y) {
                         app.player1.attaque = app.player1.attaque + 2;//+=6
                         app.target.x = app.randomFunctionX(0, app.board.x - 1);
                         app.target.y = app.randomFunctionY(0, app.board.y - 1);
                         app.removeBoard();
                         // app.drawBoard.cell.classList.remove('cellEnd');
+                    }
+                    if (app.player1.x === app.target2.x && app.player1.y === app.target2.y) {
+                        app.player1.defense = app.player1.defense + 2;//+=6
+                        app.target2.x = app.randomFunctionX(0, app.board.x - 1);
+                        app.target2.y = app.randomFunctionY(0, app.board.y - 1);
+                        app.removeBoard();
                     }
                     app.cleanbord();
                     app.drawBoard();
@@ -233,12 +320,18 @@ var app = {
                         app.player1.y = app.board.y - 1;
                         app.removeBoard();
                     }
-                    if (app.player1.x === app.target.x  && app.player1.y === app.target.y) {
+                    if (app.player1.x === app.target.x && app.player1.y === app.target.y) {
                         app.player1.attaque = app.player1.attaque + 2;//+=6
                         app.target.x = app.randomFunctionX(0, app.board.x - 1);
                         app.target.y = app.randomFunctionY(0, app.board.y - 1);
                         app.removeBoard();
                         // app.drawBoard.cell.classList.remove('cellEnd');
+                    }
+                    if (app.player1.x === app.target2.x && app.player1.y === app.target2.y) {
+                        app.player1.defense = app.player1.defense + 2;//+=6
+                        app.target2.x = app.randomFunctionX(0, app.board.x - 1);
+                        app.target2.y = app.randomFunctionY(0, app.board.y - 1);
+                        app.removeBoard();
                     }
                     app.removeBoard();
                     app.turn('ArrowDown');
@@ -253,12 +346,18 @@ var app = {
                         app.player2.x = ((app.board.x) - 1);
                         app.removeBoard();
                     }
-                    if ( app.player2.x === app.target.x &&  app.player2.y === app.target.y) {
+                    if (app.player2.x === app.target.x && app.player2.y === app.target.y) {
                         app.player2.attaque = app.player2.attaque + 2;//+=6
                         app.target.x = app.randomFunctionX(0, app.board.x - 1);
                         app.target.y = app.randomFunctionY(0, app.board.y - 1);
                         app.removeBoard();
                         // app.drawBoard.cell.classList.remove('cellEnd');
+                    }
+                    if (app.player2.x === app.target2.x && app.player2.y === app.target2.y) {
+                        app.player2.defense = app.player2.defense + 2;//+=6
+                        app.target2.x = app.randomFunctionX(0, app.board.x - 1);
+                        app.target2.y = app.randomFunctionY(0, app.board.y - 1);
+                        app.removeBoard();
                     }
                     app.removeBoard();
                     app.turn('KeyD');
@@ -269,12 +368,18 @@ var app = {
                         app.player2.x = 0;
                         app.removeBoard();
                     }
-                    if ( app.player2.x === app.target.x &&  app.player2.y === app.target.y) {
+                    if (app.player2.x === app.target.x && app.player2.y === app.target.y) {
                         app.player2.attaque = app.player2.attaque + 2;//+=6
                         app.target.x = app.randomFunctionX(0, app.board.x - 1);
                         app.target.y = app.randomFunctionY(0, app.board.y - 1);
                         app.removeBoard();
                         // app.drawBoard.cell.classList.remove('cellEnd');
+                    }
+                    if (app.player2.x === app.target2.x && app.player2.y === app.target2.y) {
+                        app.player2.defense = app.player2.defense + 2;//+=6
+                        app.target2.x = app.randomFunctionX(0, app.board.x - 1);
+                        app.target2.y = app.randomFunctionY(0, app.board.y - 1);
+                        app.removeBoard();
                     }
                     app.removeBoard();
                     app.turn('KeyA');
@@ -292,6 +397,12 @@ var app = {
                         app.removeBoard();
                         // app.drawBoard.cell.classList.remove('cellEnd');
                     }
+                    if (app.player2.x === app.target2.x && app.player2.y === app.target2.y) {
+                        app.player2.defense = app.player2.defense + 2;//+=6
+                        app.target2.x = app.randomFunctionX(0, app.board.x - 1);
+                        app.target2.y = app.randomFunctionY(0, app.board.y - 1);
+                        app.removeBoard();
+                    }
                     app.cleanbord();
                     app.drawBoard();
                     app.turn('KeyW');
@@ -302,18 +413,24 @@ var app = {
                         app.player2.y = app.board.y - 1;
                         app.removeBoard();
                     }
-                    if (app.player2.x === app.target.x &&  app.player2.y === app.target.y) {
+                    if (app.player2.x === app.target.x && app.player2.y === app.target.y) {
                         app.player2.attaque = app.player2.attaque + 2;//+=6
                         app.target.x = app.randomFunctionX(0, app.board.x - 1);
                         app.target.y = app.randomFunctionY(0, app.board.y - 1);
                         app.removeBoard();
                         // app.drawBoard.cell.classList.remove('cellEnd');
                     }
+                    if (app.player2.x === app.target2.x && app.player2.y === app.target2.y) {
+                        app.player2.defense = app.player2.defense + 2;//+=6
+                        app.target2.x = app.randomFunctionX(0, app.board.x - 1);
+                        app.target2.y = app.randomFunctionY(0, app.board.y - 1);
+                        app.removeBoard();
+                    }
                     app.removeBoard();
                     app.turn('KeyS');
                     break;
             }
-            
+
         }
 
     },

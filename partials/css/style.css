@@ -182,12 +182,21 @@ h1 {
     margin: 1px;
 }
 
-.cellStart {
-    background-color: green;
-}
 
-.cellEnd {
-    background-color: blue;
+
+.target1 {
+    background-image: url("../images/d25c1np-bba07146-c752-4864-bf8a-1c19b11f9ed9.png");
+    background-position: center;
+    background-position-x: 61%;
+    background-position-y: 31%;
+    background-size: 42rem;
+}
+.target2 {
+    background-image: url("../images/d25c1np-bba07146-c752-4864-bf8a-1c19b11f9ed9.png");
+    background-position: center;
+    background-position-x: 61.5%;
+    background-position-y: 41.5%;
+    background-size: 42rem;
 }
 
 .cellCurrent {
@@ -221,6 +230,13 @@ h1 {
 .win {
     background-image: url("../images/win.gif");
 }
+.fireBall {
+    background-image: url("../images/d25c1np-bba07146-c752-4864-bf8a-1c19b11f9ed9.png");
+    background-position: center;
+    background-position-x: 61%;
+    background-position-y: 25%;
+    background-size: 42rem;
+}
 
 
 .cellCurrent-top {
@@ -241,4 +257,4 @@ h1 {
 .cellCurrent-right {
     background-position-y: 67.5%;
     background-size: 8.5rem;
-}
+};
