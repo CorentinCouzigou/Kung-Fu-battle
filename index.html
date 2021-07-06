@@ -14,26 +14,29 @@
     <header class="header"></header>
     <h1>Elements Battle</h1>
 
-    <div id="modalContainer" class="modal" aria-hidden="true" role="alert" aria-modal="false">
+    <div id="modalContainer">
         <div id="modalWrapper">
-            <button class="ChoseFire buttonSelection"><img class="imgPerso" src="./partials/images/Fire.jpg"
-                alt="Elephant at sunset">
+            <h2 class="playerSelection">Choose your character for the Player1</h2>
+            <div id="modalButton">
+            <button class="ChoseFire buttonSelection" value="fire"><img class="imgPerso" src="./partials/images/Fire.jpg"
+                alt="image of fire warrior ">
            <span>Fire</span></button>
-            <button class="ChoseWater buttonSelection"><img class="imgPerso"  src="./partials/images/Water.jpg"
-                alt="Elephant at sunset">
+            <button class="ChoseWater buttonSelection" value="water"><img class="imgPerso"  src="./partials/images/Water.jpg"
+                alt="image of water warrior ">
            <span>Water</span></button>
-            <button class="ChoseEarth buttonSelection"><img class="imgPerso"  src="./partials/images/Earth.jpg"
-                alt="Elephant at sunset">
+            <button class="ChoseEarth buttonSelection" value="earth"><img class="imgPerso"  src="./partials/images/Earth.jpg"
+                alt="image of earth warrior ">
           <span>Earth</span></button>
-            <button class="ChoseWin buttonSelection"><img class="imgPerso"  src="./partials/images/Win.jpg"
-                alt="Elephant at sunset">
+            <button class="ChoseWin buttonSelection" value="win"><img class="imgPerso"  src="./partials/images/Win.jpg"
+                alt="image of win warrior ">
            <span>Win</span></button>
+        </div>
         </div>
     </div>
 
     <div class="container">
         <div class="playerDesc">
-            <h2>Player 1</h2>
+            <h3>Player 1</h3>
             <br>
             <p class="pvPlayer1">PV:</p>
             <p class="attPlayer1">Attaque:</p>

@@ -3,13 +3,15 @@ var app = {
         x: 0,
         y: 0
     },
+    countEvent : 0,
     player1: {
         pv: 20,
         attaque: 2,
         defense: 2,
         x: 0,
         y: 0,
-        direction: 'right'
+        direction: 'right',
+        skin: 'fire'
     },
     player2: {
         pv: 20,
@@ -17,11 +19,17 @@ var app = {
         def: 2,
         x: 0,
         y: 0,
-        direction: 'left'
+        direction: 'left',
+        skin:'fire'
+    },
+    fireball: {
+        x:0,
+        y:0
     },
     target: {
         x: 0,
-        y: 0
+        y: 0,
+        emplacement:'depart'
     },
     init: function () {
         console.log('init');
@@ -56,12 +64,40 @@ var app = {
                 cell.classList.add('cell');
                 if (x == app.player1.x && y == app.player1.y) {
                     cell.classList.add('cellCurrent', 'player1');
+                    switch (app.player1.skin){
+                        case 'fire':
+                            cell.classList.add('fire');
+                            break;
+                        case 'water':
+                            cell.classList.add('water');
+                            break;
+                        case 'earth':
+                            cell.classList.add('earth');
+                            break;
+                        case 'win':
+                            cell.classList.add('win');
+                            break;
+                    }
                 }
-                if (x == app.target.x && y == app.target.y) {
-                    cell.classList.add('cellEnd');
+                if (x === app.target.x && y === app.target.y) {
+                    cell.classList.add('cellEnd');                    
                 }
                 if (x == app.player2.x && y == app.player2.y) {
                     cell.classList.add('cellCurrent', 'player2');
+                    switch (app.player2.skin){
+                        case 'fire':
+                            cell.classList.add('fire');
+                            break;
+                        case 'water':
+                            cell.classList.add('water');
+                            break;
+                        case 'earth':
+                            cell.classList.add('earth');
+                            break;
+                        case 'win':
+                            cell.classList.add('win');
+                            break;
+                    }
                 }
                 row.append(cell);
             }
@@ -80,19 +116,49 @@ var app = {
         player2Attaque.textContent = `Attaque: ${app.player2.attaque}`;
         const player2Defense = document.querySelector('.defPlayer2')
         player2Defense.textContent = `Défense: ${app.player2.defense}`;
+
+        if (app.player1.skin === 'fire' || app.player2.skin === 'fire'){
+            app.fireball.x = (app.player1.x || app.player2.x);
+            app.fireball.y = (app.player1.y || app.player2.y);
+        }
     },
 
     //ajout de tous les écouteurs d'evenements
     allListener() {
         document.addEventListener('keyup', app.moveForward);
-        const buttonSelection = document.querySelector('.buttonSelection');
-        buttonSelection.addEventListener('click',app.closeModal)
+        const buttonSelection = document.querySelectorAll('.buttonSelection');
+        for (let button of buttonSelection){
+            button.addEventListener('click', app.closeModal)
+        }
     },
-    closeModal (){
-        const modal = document.querySelector('#modalContainer');
-        modal.classList.add('displayNone');
-        app.init();
+
+    closeModal (event){
+        console.log(event.currentTarget.value)
+        app.countEvent++
+        if (app.countEvent === 1){
+            console.log('iteration',event.currentTarget.value);
+            const playerSelection = document.querySelector('.playerSelection');
+            playerSelection.textContent = "Choose your character for the Player2";
+            event.currentTarget.classList.add('displayNone');
+            
+            app.player1.skin = event.currentTarget.value;
+            const buttonSelection = document.querySelectorAll('.buttonSelection');
+            for (let button of buttonSelection){
+                button.addEventListener('click', app.closeModal)
+            }
+        }
+        if (app.countEvent === 2){
+            app.player2.skin = event.currentTarget.value;
+            const modal = document.querySelector('#modalContainer');
+            modal.classList.add('displayNone');
+            app.removeBoard();
+        }
+        
+   
+
+        
     },
+
     moveForward(event) {
         const data = event.code;
         console.log(event.code);
@@ -102,6 +168,12 @@ var app = {
          if (data === 'KeyD' || data === 'KeyA' || data === 'KeyW' || data === 'KeyS') {
             app.turn(data);
         } 
+        if (data === 'KeyB'){
+
+        }
+        if (data === 'Numpad2'){
+            app.player1.direction
+        }
         if (data === 'Numpad1') {
             switch (app.player1.direction) {
                 case 'right':
@@ -111,9 +183,12 @@ var app = {
                         app.removeBoard();
                     }
                     if (app.player1.x === app.target.x  && app.player1.y === app.target.y) {
-                        app.player1.attaque = app.player1.attaque + 4;//+=6
+                        app.player1.attaque = app.player1.attaque + 2;//+=6
                         console.log(app.player1.attaque)
+                        app.target.x = app.randomFunctionX(0, app.board.x - 1);
+                        app.target.y = app.randomFunctionY(0, app.board.y - 1);
                         app.removeBoard();
+                        
                         // app.drawBoard.cell.classList.remove('cellEnd');
                     }
                     app.removeBoard();
@@ -126,7 +201,9 @@ var app = {
                         app.removeBoard();
                     }
                     if (app.player1.x === app.target.x  && app.player1.y === app.target.y ) {
-                        app.player1.attaque = app.player1.attaque + 6;//+=6
+                        app.player1.attaque = app.player1.attaque + 2;//+=6
+                        app.target.x = app.randomFunctionX(0, app.board.x - 1);
+                        app.target.y = app.randomFunctionY(0, app.board.y - 1);
                         app.removeBoard();
                         // app.drawBoard.cell.classList.remove('cellEnd');
                     }
@@ -140,8 +217,9 @@ var app = {
                         app.removeBoard();
                     }
                     if (app.player1.x === app.target.x  && app.player1.y === app.target.y) {
-                        app.player1.attaque = app.player1.attaque + 6;//+=6
-                        console.log(app.player1.attaque)
+                        app.player1.attaque = app.player1.attaque + 2;//+=6
+                        app.target.x = app.randomFunctionX(0, app.board.x - 1);
+                        app.target.y = app.randomFunctionY(0, app.board.y - 1);
                         app.removeBoard();
                         // app.drawBoard.cell.classList.remove('cellEnd');
                     }
@@ -156,8 +234,9 @@ var app = {
                         app.removeBoard();
                     }
                     if (app.player1.x === app.target.x  && app.player1.y === app.target.y) {
-                        app.player1.attaque = app.player1.attaque + 6;//+=6
-                        console.log(app.player1.attaque)
+                        app.player1.attaque = app.player1.attaque + 2;//+=6
+                        app.target.x = app.randomFunctionX(0, app.board.x - 1);
+                        app.target.y = app.randomFunctionY(0, app.board.y - 1);
                         app.removeBoard();
                         // app.drawBoard.cell.classList.remove('cellEnd');
                     }
@@ -175,8 +254,9 @@ var app = {
                         app.removeBoard();
                     }
                     if ( app.player2.x === app.target.x &&  app.player2.y === app.target.y) {
-                        app.player2.attaque = app.player2.attaque + 6;//+=6
-                        console.log(app.player1.attaque)
+                        app.player2.attaque = app.player2.attaque + 2;//+=6
+                        app.target.x = app.randomFunctionX(0, app.board.x - 1);
+                        app.target.y = app.randomFunctionY(0, app.board.y - 1);
                         app.removeBoard();
                         // app.drawBoard.cell.classList.remove('cellEnd');
                     }
@@ -190,7 +270,9 @@ var app = {
                         app.removeBoard();
                     }
                     if ( app.player2.x === app.target.x &&  app.player2.y === app.target.y) {
-                        app.player2.attaque = app.player2.attaque + 6;//+=6
+                        app.player2.attaque = app.player2.attaque + 2;//+=6
+                        app.target.x = app.randomFunctionX(0, app.board.x - 1);
+                        app.target.y = app.randomFunctionY(0, app.board.y - 1);
                         app.removeBoard();
                         // app.drawBoard.cell.classList.remove('cellEnd');
                     }
@@ -204,7 +286,9 @@ var app = {
                         app.removeBoard();
                     }
                     if (app.player2.x === app.target.x && app.player2.y === app.target.y) {
-                        app.player2.attaque = app.player2.attaque + 6;//+=6
+                        app.player2.attaque = app.player2.attaque + 2;//+=6
+                        app.target.x = app.randomFunctionX(0, app.board.x - 1);
+                        app.target.y = app.randomFunctionY(0, app.board.y - 1);
                         app.removeBoard();
                         // app.drawBoard.cell.classList.remove('cellEnd');
                     }
@@ -219,7 +303,9 @@ var app = {
                         app.removeBoard();
                     }
                     if (app.player2.x === app.target.x &&  app.player2.y === app.target.y) {
-                        app.player2.attaque = app.player2.attaque + 6;//+=6
+                        app.player2.attaque = app.player2.attaque + 2;//+=6
+                        app.target.x = app.randomFunctionX(0, app.board.x - 1);
+                        app.target.y = app.randomFunctionY(0, app.board.y - 1);
                         app.removeBoard();
                         // app.drawBoard.cell.classList.remove('cellEnd');
                     }
