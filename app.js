@@ -149,9 +149,15 @@ var app = {
 
                 }
                 if ((x === app.fireball.x) && (y === app.fireball.y)) {
-                    cell.classList.add('fireballhidden');
+                    cell.classList.add('ballhidden');
                     if(app.fireball.active === 'yes'){
                         cell.classList.add('fireball');                        
+                    }
+                }
+                if ((x === app.iceball.x) && (y === app.iceball.y)) {
+                    cell.classList.add('ballhidden');
+                    if(app.iceball.active === 'yes'){
+                        cell.classList.add('iceball');                        
                     }
                 }
                 row.append(cell);
@@ -164,7 +170,7 @@ var app = {
         player1Attaque.textContent = `Attaque: ${app.player1.attaque}`;
         const player1Defense = document.querySelector('.defPlayer1')
         player1Defense.textContent = `Défense: ${app.player1.defense}`;
-        //Valeyrs du player 2
+        //Valeurs du player 2
         const player2Pv = document.querySelector('.pvPlayer2')
         player2Pv.textContent = `Pv: ${app.player2.pv}`;
         const player2Attaque = document.querySelector('.attPlayer2')
@@ -192,7 +198,13 @@ var app = {
             playerSelection.textContent = "Choose your character for the Player2";
             event.currentTarget.classList.add('displayNone');
             app.player1.skin = event.currentTarget.value;
-            app.fireballFunction();
+            switch (event.currentTarget.value){
+                case ('fire'):
+                app.fireballFunction();
+                case ('water'):
+                app.waterballFunction();
+            }
+            
 
             const buttonSelection = document.querySelectorAll('.buttonSelection');
             for (let button of buttonSelection) {
@@ -201,7 +213,12 @@ var app = {
         }
         if (app.countEvent === 2) {
             app.player2.skin = event.currentTarget.value;
-            app.fireballFunction();
+            switch (event.currentTarget.value){
+                case ('fire'):
+                app.fireballFunction();
+                case ('water'):
+                app.waterballFunction();
+            }
             const modal = document.querySelector('#modalContainer');
             modal.classList.add('displayNone');
             app.removeBoard();
@@ -218,7 +235,9 @@ var app = {
             app.turn(data);
         }
         if (data === 'KeyB') {
+            if (app.player2.skin === 'fire'){
             switch (app.player2.direction) {
+            
                 case 'right':
                     app.fireball.x++;
                     app.fireball.active = 'yes';
@@ -242,7 +261,6 @@ var app = {
                     if (app.fireball.x < 0) {
                         let fireBall = document.querySelector('.fireball');
                         fireBall.classList.remove('.fireball');
-
                         app.removeBoard();
                     }
                     app.removeBoard();
@@ -254,7 +272,6 @@ var app = {
                     if (app.fireball.x === app.player1.x) {
                         let result = app.player1.pv + app.player1.defense ;
                         let finalresult = result - app.player2.attaque;
-                        console.log('pvp', finalresult);
                         app.player1.pv = finalresult;
                         if (app.player1.pv === 0) {
                             alert('Player1 Win');
@@ -283,7 +300,6 @@ var app = {
                     if (app.fireball.x === app.player1.x) {
                         let result = app.player1.pv + app.player1.defense ;
                         let finalresult = result - app.player1.attaque;
-                        console.log('pvp', finalresult);
                         app.player1.pv = finalresult;
                         if (app.player1.pv === 0) {
                             alert('Player2 Win');
@@ -323,7 +339,6 @@ var app = {
                     if (app.fireball.x === app.board.x) {
                         let fireBall = document.querySelector('.fireball');
                         fireBall.classList.remove('.fireball');
-
                         app.removeBoard();
                     }
                     if (app.fireball.x < 0) {
@@ -336,7 +351,123 @@ var app = {
                     break;
             }
         }
+        if (app.player2.skin === 'water'){
+            switch (app.player2.direction) {
+                case 'right':
+                    app.iceball.x++;
+                    app.iceball.active = 'yes';
+                    if (app.iceball.x === app.player1.x) {
+                        let result = app.player1.pv + app.player1.defense ;
+                        let finalresult = result - app.player2.attaque;
+                        console.log('pvp', finalresult);
+                        app.player1.pv = finalresult;
+                        if (app.player1.pv === 0) {
+                            alert('Player2 Win');
+                            document.location.reload();
+                        }
+                        app.removeBoard();
+                    }
+                    if (app.iceball.x === app.board.x) {
+                        let iceball = document.querySelector('.iceball');
+                        iceball.classList.remove('.iceball');
+
+                        app.removeBoard();
+                    }
+                    if (app.iceball.x < 0) {
+                        let iceball = document.querySelector('.iceball');
+                        iceball.classList.remove('.iceball');
+                        app.removeBoard();
+                    }
+                    app.removeBoard();
+
+                    break;
+                    case 'left':
+                    app.iceball.x--;
+                    app.iceball.active = 'yes';
+                    if (app.iceball.x === app.player1.x) {
+                        let result = app.player1.pv + app.player1.defense ;
+                        let finalresult = result - app.player2.attaque;
+                        app.player1.pv = finalresult;
+                        if (app.player1.pv === 0) {
+                            alert('Player1 Win');
+                            document.location.reload();
+                        }
+                        app.removeBoard();
+                    }
+                    if (app.iceball.x === app.board.x) {
+                        let iceball = document.querySelector('.iceball');
+                        iceball.classList.remove('.iceball');
+
+                        app.removeBoard();
+                    }
+                    if (app.iceball.x < 0) {
+                        let iceball = document.querySelector('.iceball');
+                        iceball.classList.remove('.iceball');
+
+                        app.removeBoard();
+                    }
+                    app.removeBoard();
+
+                    break;
+                    case 'top':
+                    app.iceball.y--;
+                    app.iceball.active = 'yes';
+                    if (app.iceball.x === app.player1.x) {
+                        let result = app.player1.pv + app.player1.defense ;
+                        let finalresult = result - app.player1.attaque;
+                        app.player1.pv = finalresult;
+                        if (app.player1.pv === 0) {
+                            alert('Player2 Win');
+                            document.location.reload();
+                        }
+                        app.removeBoard();
+                    }
+                    if (app.iceball.x === app.board.x) {
+                        let iceball = document.querySelector('.iceball');
+                        iceball.classList.remove('.iceball');
+
+                        app.removeBoard();
+                    }
+                    if (app.iceball.x < 0) {
+                        let iceball = document.querySelector('.iceball');
+                        iceball.classList.remove('.iceball');
+    
+                        app.removeBoard();
+                    }
+                    app.removeBoard();
+  
+                    break;
+                    case 'bottom':
+                    app.iceball.y++;
+                    app.iceball.active = 'yes';
+                    if (app.iceball.x === app.player1.x) {
+                        let result = app.player1.pv + app.player1.defense ;
+                        let finalresult = result - app.player2.attaque;
+                        console.log('pvp', finalresult);
+                        app.player1.pv = finalresult;
+                        if (app.player1.pv === 0) {
+                            alert('Player2 Win');
+                            document.location.reload();
+                        }
+                        app.removeBoard();
+                    }
+                    if (app.iceball.x === app.board.x) {
+                        let iceball = document.querySelector('.iceball');
+                        iceball.classList.remove('.iceball');
+                        app.removeBoard();
+                    }
+                    if (app.iceball.x < 0) {
+                        let iceball = document.querySelector('.iceball');
+                        iceball.classList.remove('.iceball');
+  
+                        app.removeBoard();
+                    }
+                    app.removeBoard();
+                    break;
+            }
+    }
         if (data === 'Numpad2') {
+            if (app.player1.skin === 'fire'){
             switch (app.player1.direction) {
                 case 'right':
                     app.fireball.x++;
@@ -457,6 +588,7 @@ var app = {
 
             }
         }
+    }
         if (data === 'Numpad1') {
             switch (app.player1.direction) {
                 case 'right':
@@ -464,7 +596,7 @@ var app = {
                     app.fireballFunction();
                     if(app.fireball.active === 'yes'){
                         app.fireball.active = 'no';
-                        console.log('salut');
+
                        let cellFire = document.querySelector('.fireball')
                         cellFire.classList.remove('.fireball')
                     }
@@ -603,6 +735,11 @@ var app = {
                 case 'right':
                     app.player2.x++;
                     app.fireballFunction();
+                    if( app.fireball.active === 'yes'){
+                        app.fireball.active = 'no';
+                        cellFire = document.querySelector('.fireball')
+                        cellFire.classList.remove('.fireball')
+                    }
                     if (app.player2.x > app.board.x - 1) {
                         app.player2.x = ((app.board.x) - 1); 
                     }
@@ -631,6 +768,11 @@ var app = {
                 case 'left':
                     app.player2.x--;
                     app.fireballFunction();
+                    if( app.fireball.active === 'yes'){
+                        app.fireball.active = 'no';
+                        cellFire = document.querySelector('.fireball')
+                        cellFire.classList.remove('.fireball')
+                    }
                     if (app.player2.x < 0) {
                         app.player2.x = 0;
                         app.removeBoard();
@@ -661,6 +803,11 @@ var app = {
                 case 'top':
                     app.player2.y--;
                     app.fireballFunction();
+                    if( app.fireball.active === 'yes'){
+                        app.fireball.active = 'no';
+                        cellFire = document.querySelector('.fireball')
+                        cellFire.classList.remove('.fireball')
+                    }
                     if (app.player2.y < 0) {
                         app.player2.y = 0;
                         app.removeBoard();
@@ -691,6 +838,11 @@ var app = {
                 case 'bottom':
                     app.player2.y++;
                     app.fireballFunction();
+                    if( app.fireball.active === 'yes'){
+                        app.fireball.active = 'no';
+                        cellFire = document.querySelector('.fireball')
+                        cellFire.classList.remove('.fireball')
+                    }
                     if (app.player2.y > app.board.y - 1) {
                         app.player2.y = app.board.y - 1;
                         app.removeBoard();
